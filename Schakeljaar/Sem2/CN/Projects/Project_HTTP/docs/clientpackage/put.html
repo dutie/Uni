@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>put.py</title>
+  <link rel="stylesheet" href="..\pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>put.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">put_data</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">res</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">):</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">res</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span> <span class="ow">and</span> <span class="n">res</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">):</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;[PUT] new path to send to (e.g.: folder/file.txt): &quot;</span><span class="p">)</span>
+        <span class="n">txt</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;[PUT] string to send: &quot;</span><span class="p">)</span>
+    
+    
+    <span class="n">request</span>  <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;PUT /</span><span class="si">{}</span><span class="s1"> HTTP/1.1</span><span class="se">\r\n</span><span class="s1">&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">res</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+    <span class="n">request</span> <span class="o">+=</span> <span class="s1">&#39;Host: </span><span class="si">{}</span><span class="se">\r\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">client</span><span class="o">.</span><span class="n">addr</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+    <span class="n">request</span> <span class="o">+=</span> <span class="s1">&#39;Content-Type: text/plain</span><span class="se">\r\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+    <span class="n">request</span> <span class="o">+=</span> <span class="s1">&#39;Content-Length: </span><span class="si">{}</span><span class="se">\r\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">txt</span><span class="p">))</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+    <span class="n">request</span> <span class="o">+=</span> <span class="sa">b</span><span class="s1">&#39;Connection: close</span><span class="se">\r\n</span><span class="s1">&#39;</span>
+    <span class="n">request</span> <span class="o">+=</span> <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\r\n</span><span class="s1">&#39;</span>
+    <span class="n">request</span> <span class="o">+=</span> <span class="n">txt</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[PUT] put request: </span><span class="se">\r\n</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)))</span>
+    
+    <span class="n">client</span><span class="o">.</span><span class="n">sock</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">request</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[PUT]&quot;</span><span class="p">)</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>parser_.py</title>
+  <link rel="stylesheet" href="pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>parser_.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      <h1><span id="handling-parsing" href="handling-parsing"> Handling parsing </span></h1>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      <h2><span id="imports:" href="imports:"> Imports: </span></h2>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="kn">import</span> <span class="nn">socket</span>
+<span class="kn">from</span> <span class="nn">bs4</span> <span class="kn">import</span> <span class="n">BeautifulSoup</span>
+<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">get</span><span class="o">,</span> <span class="nn">head</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      <h2><span id="create-html,-find-embedded-objects-and-store" href="create-html,-find-embedded-objects-and-store"> Create HTML, find embedded objects and store </span></h2>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      <p>This function will be called after all the data is received from  <a href="head.html">head.py</a> and  <a href="get.html">get.py</a>, and the client is attained from  <a href="client.html">client.py</a>.
+It will turn raw data into HTML using <em>BeautifulSoup</em>.
+From this soup, it will search for embedded objects and parse these in  <a href="parser_.html#section-4">parser_.py</a>.
+Then everything is saved correctly.
+In the end the client&rsquo;s socket is closed.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">set_html_file</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+    <span class="n">html</span> <span class="o">=</span> <span class="n">data</span>
+    <span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">html</span><span class="p">,</span> <span class="s1">&#39;html.parser&#39;</span><span class="p">)</span>
+    
+    <span class="n">images</span> <span class="o">=</span> <span class="n">get_images</span><span class="p">(</span><span class="n">client</span><span class="p">,</span><span class="n">soup</span><span class="p">)</span>
+    
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Address: &quot;</span><span class="p">,</span> <span class="n">client</span><span class="o">.</span><span class="n">addr</span><span class="p">)</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">addr</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">index</span> <span class="o">=</span> <span class="s2">&quot;index.html&quot;</span>
+    
+    <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">path</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\\</span><span class="s1">get</span><span class="se">\\</span><span class="s1">home</span><span class="se">\\</span><span class="s1">&#39;</span><span class="o">+</span><span class="n">name</span><span class="p">):</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">path</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\\</span><span class="s1">get</span><span class="se">\\</span><span class="s1">home</span><span class="se">\\</span><span class="s1">&#39;</span><span class="o">+</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">path</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\\</span><span class="s1">get</span><span class="se">\\</span><span class="s1">home</span><span class="se">\\</span><span class="s1">&#39;</span><span class="o">+</span><span class="n">name</span><span class="o">+</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">images&#39;</span><span class="p">)</span>
+    
+    <span class="k">if</span><span class="p">(</span><span class="n">images</span> <span class="o">!=</span> <span class="p">[]</span> <span class="ow">and</span> <span class="n">images</span> <span class="o">!=</span> <span class="p">[()]):</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">src</span><span class="p">,</span><span class="n">image</span><span class="p">)</span> <span class="ow">in</span> <span class="n">images</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">src</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;IMG: &quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">image</span><span class="p">))</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;get/home/</span><span class="si">{}</span><span class="s1">/images</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">src</span><span class="p">),</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+    
+    
+    
+    <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;get/home/</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">index</span><span class="p">),</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span>
+    
+    
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">soup</span><span class="p">))</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    
+    <span class="n">client</span><span class="o">.</span><span class="n">sock</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      <h2><span id="getting-embedded-objects" href="getting-embedded-objects"> Getting embedded objects </span></h2>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      <p>This function is called when an HTML is made and ready to find objects.
+We look for the tag: &lsquo;img&rsquo; to find images. Then we save the source of the images to generate a request in  <a href="parser_.html#section-6">parser_.py</a>.
+When we get the request, we send it, get the headers in  <a href="head.html">head.py</a> and get the data in  <a href="get.html">get.py</a>.
+In the end, we format the source in the HTML to match the actual location on the Client.
+Finally, we return the source and reply.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">get_images</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;[GET] getting images...&#39;</span><span class="p">)</span>
+    
+    <span class="n">images</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">reply</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39;&#39;</span>
+    <span class="k">for</span> <span class="n">imgtag</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s1">&#39;img&#39;</span><span class="p">):</span>
+        <span class="n">src</span> <span class="o">=</span> <span class="n">imgtag</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;src&#39;</span><span class="p">)</span>
+        
+        <span class="n">src</span> <span class="o">=</span> <span class="n">src</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;_&quot;</span><span class="p">)</span>
+        <span class="n">src</span> <span class="o">=</span> <span class="n">src</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;%20&quot;</span><span class="p">,</span> <span class="s2">&quot;_&quot;</span><span class="p">)</span>
+        <span class="n">request</span> <span class="o">=</span> <span class="n">get_from_src</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">client</span><span class="o">.</span><span class="n">addr</span><span class="p">,</span> <span class="n">client</span><span class="p">)</span>
+        
+        <span class="n">client</span><span class="o">.</span><span class="n">sock</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+        <span class="n">headers</span> <span class="o">=</span> <span class="n">head</span><span class="o">.</span><span class="n">get_head</span><span class="p">(</span><span class="n">client</span><span class="p">)</span>
+        <span class="n">reply</span>   <span class="o">=</span> <span class="n">get</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="n">headers</span><span class="p">,</span> <span class="n">client</span><span class="p">)</span>
+        
+        <span class="n">src</span> <span class="o">=</span> <span class="n">src</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        
+        <span class="k">if</span><span class="p">(</span><span class="n">src</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="n">src</span> <span class="o">=</span> <span class="s2">&quot;/</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">src</span><span class="p">))</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">client</span><span class="o">.</span><span class="n">addr</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">src</span><span class="p">))</span>
+        
+        <span class="n">imgtag</span><span class="p">[</span><span class="s1">&#39;src&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;./images</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">src</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Request: &#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">request</span><span class="p">))</span>
+    
+        <span class="n">images</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">src</span><span class="p">,</span> <span class="n">reply</span><span class="p">))</span>
+       
+    <span class="k">return</span> <span class="n">images</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      <h2><span id="generate-request-for-objects" href="generate-request-for-objects"> Generate request for objects </span></h2>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-7'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-7'>#</a>
+      </div>
+      <p>After an embedded object is found and the path to the folder is found, we create a request to get this object from the server.
+Then we return the request.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">get_from_src</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">host</span><span class="p">,</span> <span class="n">client</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">host</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">src</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;/&quot;</span><span class="p">:</span>
+        <span class="n">src</span> <span class="o">=</span> <span class="n">src</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[GET] getting object...&quot;</span><span class="p">)</span>
+                    
+    <span class="n">request</span>  <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;GET&quot;</span> <span class="o">+</span> <span class="s1">&#39; /</span><span class="si">{}</span><span class="s1"> HTTP/1.1</span><span class="se">\r\n</span><span class="s1">&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">src</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+    <span class="n">request</span> <span class="o">+=</span> <span class="s1">&#39;Host: </span><span class="si">{}</span><span class="se">\r\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">client</span><span class="o">.</span><span class="n">addr</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+    <span class="n">request</span> <span class="o">+=</span> <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\r\n</span><span class="s1">&#39;</span>
+    <span class="n">request</span> <span class="o">+=</span> <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\r\n</span><span class="s1">&#39;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[GET] image request: &quot;</span><span class="p">,</span> <span class="n">request</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">request</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-8'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-8'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>        
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Parser.&quot;</span><span class="p">)</span>
+    
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

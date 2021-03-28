@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>get.py</title>
+  <link rel="stylesheet" href="pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>get.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      <h1><span id="handling-get" href="handling-get"> Handling GET </span></h1>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      <h2><span id="imports:" href="imports:"> Imports: </span></h2>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">socket</span>
+<span class="kn">import</span> <span class="nn">os</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      <h2><span id="content-length:-x" href="content-length:-x"> Content-Length: x </span></h2>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      <p>After receiving the header with &lsquo;Content-Length: x&rsquo; in it, we process this.
+We try to receive the full length on the client&rsquo;s socket from  <a href="client.html">client.py</a>, if this does not work, we check on the remaining length until it does.
+Then we return the data.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span>  <span class="nf">get_content</span><span class="p">(</span><span class="n">length</span><span class="p">,</span> <span class="n">client</span><span class="p">):</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39;&#39;</span>
+    
+    <span class="n">data</span> <span class="o">+=</span> <span class="n">client</span><span class="o">.</span><span class="n">sock</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="n">length</span><span class="p">)</span>
+    <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">length</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">+=</span> <span class="n">client</span><span class="o">.</span><span class="n">sock</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="n">length</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
+        
+    <span class="k">return</span> <span class="n">data</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">get_content_it</span><span class="p">(</span><span class="n">length</span><span class="p">,</span> <span class="n">client</span><span class="p">):</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39;&#39;</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">+=</span> <span class="n">client</span><span class="o">.</span><span class="n">sock</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="n">length</span><span class="p">)</span>
+        <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">length</span><span class="p">:</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span>
+            <span class="n">data</span> <span class="o">+=</span> <span class="n">client</span><span class="o">.</span><span class="n">sock</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="n">length</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">length</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span> <span class="k">break</span>
+        <span class="k">if</span> <span class="n">length</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span> <span class="k">break</span>
+        
+    <span class="k">return</span> <span class="n">data</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      <h2><span id="transfer-encoding:-chunked" href="transfer-encoding:-chunked"> Transfer-Encoding: chunked </span></h2>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      <p>After receiving the header with &lsquo;chunked&rsquo; in it, we process this.
+The function receives, on the client&rsquo;s socket, a chunk and checks for the length of the nex.
+Also, since there are some failures, we check if the length matches that of the received data.
+Then we return the data.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">get_chunked</span><span class="p">(</span><span class="n">client</span><span class="p">):</span>
+    <span class="n">helper_data</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39;&#39;</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39;&#39;</span>
+    <span class="n">next_length</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">first</span> <span class="o">=</span> <span class="kc">True</span>
+    
+    <span class="k">if</span> <span class="n">first</span><span class="p">:</span>
+        <span class="n">next_length</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">client</span><span class="o">.</span><span class="n">sock</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="mi">4</span><span class="p">),</span> <span class="mi">16</span><span class="p">)</span>
+        <span class="n">first</span> <span class="o">=</span> <span class="kc">False</span>
+        
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">helper_data</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">sock</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="n">next_length</span><span class="p">)</span>
+        
+        <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">helper_data</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">next_length</span><span class="p">:</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span>
+            <span class="n">helper_data</span> <span class="o">+=</span> <span class="n">client</span><span class="o">.</span><span class="n">sock</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="n">next_length</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">helper_data</span><span class="p">))</span>
+
+        <span class="n">data</span> <span class="o">+=</span> <span class="n">helper_data</span>
+        <span class="n">helper_data</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39;&#39;</span>
+        <span class="k">while</span> <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\r\n</span><span class="s1">&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">helper_data</span><span class="p">:</span>
+            <span class="n">helper_data</span> <span class="o">+=</span> <span class="n">client</span><span class="o">.</span><span class="n">sock</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            
+        <span class="n">next_length</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">client</span><span class="o">.</span><span class="n">sock</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="mi">4</span><span class="p">),</span> <span class="mi">16</span><span class="p">)</span>
+        
+                
+        <span class="k">if</span><span class="p">(</span><span class="n">next_length</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="k">break</span>
+        
+    <span class="k">return</span> <span class="n">data</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-7'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-7'>#</a>
+      </div>
+      <h2><span id="receiving-the-actual-data" href="receiving-the-actual-data"> Receiving the actual data </span></h2>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-8'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-8'>#</a>
+      </div>
+      <p>After the header from  <a href="head.html">head.py</a> has been received, we look for the type of length of the file:</p>
+<ul>
+<li><strong>Content-Length</strong>: x or in  <a href="get.html#section-1">get.py</a>,</li>
+<li><strong>Transfer-Encoding</strong>: Chunked  <a href="get.html#section-2">get.py</a>,</li>
+</ul>
+<p>and handle both accordingly.
+Then we return the received data.
+With the returned data, we will parse it to HTML in  <a href="parser_.html">parser_.py</a></p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">get_data</span><span class="p">(</span><span class="n">headers</span><span class="p">,</span> <span class="n">client</span><span class="p">):</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39;&#39;</span>
+    
+    <span class="n">content_length</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Content-Length&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+    <span class="n">chunked</span> <span class="o">=</span> <span class="p">(</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Transfer-Encoding&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+    
+    <span class="k">if</span> <span class="n">chunked</span> <span class="o">==</span> <span class="s1">&#39;chunked&#39;</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[GET] Transfer-Encoding: chunked&quot;</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">+=</span> <span class="n">get_chunked</span><span class="p">(</span><span class="n">client</span><span class="p">)</span>
+    
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[GET] Content-Length: &quot;</span><span class="p">,</span> <span class="n">content_length</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">+=</span> <span class="n">get_content</span><span class="p">(</span><span class="n">content_length</span><span class="p">,</span> <span class="n">client</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">data</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-9'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-9'>#</a>
+      </div>
+      <h2><span id="setting-up-the-get-request" href="setting-up-the-get-request"> Setting up the GET request </span></h2>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-10'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-10'>#</a>
+      </div>
+      <p>To setup the GET request, we form the request based on our Client  <a href="client.html">client.py</a> and send it.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">setup</span><span class="p">(</span><span class="n">client</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[GET]&quot;</span><span class="p">)</span>
+    
+    <span class="n">request</span>  <span class="o">=</span> <span class="p">(</span><span class="n">client</span><span class="o">.</span><span class="n">command</span> <span class="o">+</span> <span class="s1">&#39; / HTTP/1.1</span><span class="se">\r\n</span><span class="s1">&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+    <span class="n">request</span> <span class="o">+=</span> <span class="s1">&#39;Host: </span><span class="si">{}</span><span class="se">\r\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">client</span><span class="o">.</span><span class="n">addr</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+    <span class="n">request</span> <span class="o">+=</span> <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\r\n\r\n</span><span class="s1">&#39;</span>
+        
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[GET] requesting: </span><span class="se">\r\n</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;UTF-8&#39;</span><span class="p">)))</span>
+    <span class="n">client</span><span class="o">.</span><span class="n">sock</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">request</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-11'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-11'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[GET]&quot;</span><span class="p">)</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>post.py</title>
+  <link rel="stylesheet" href="pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>post.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      <h1><span id="handling-post" href="handling-post"> Handling POST </span></h1>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      <h2><span id="imports:" href="imports:"> Imports: </span></h2>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="kn">import</span> <span class="nn">json</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      <h2><span id="create,-request-and-send-post" href="create,-request-and-send-post"> Create, request and send POST </span></h2>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      <p>When a post is requested without any given data, we request it from the user.
+We request:
+   - path to where the file to be written is,
+   - if we want, query in the URI,
+   - text or form to be written.
+We check if we are sending a form or a text and act accordingly in  <a href="post.html#section-4">post.py</a> and  <a href="post.html#section-6">post.py</a>.
+If we request a query (not usual!) we put this in the header in  <a href="post.html#section-4">post.py</a> and  <a href="post.html#section-8">post.py</a>.
+Now we set the request and send it using the  <a href="client.html">client.py</a>&lsquo;s socket.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">post_data</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">res</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">):</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">res</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span> <span class="ow">and</span> <span class="n">res</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">):</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;[POST] new path to send to (e.g.: folder/file.txt): &quot;</span><span class="p">)</span>
+        <span class="n">qry</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;[POST] form to query (else just ENTER) [{key: input}, {key: input}]: &quot;</span><span class="p">)</span>
+        <span class="n">txt</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;[POST] string or form [{key: input}, {key: input}] to send: &quot;</span><span class="p">)</span>
+    
+    <span class="n">content_type</span> <span class="o">=</span> <span class="s2">&quot;text/plain&quot;</span>
+    <span class="k">if</span><span class="p">(</span><span class="s1">&#39;[{&#39;</span> <span class="ow">in</span> <span class="n">txt</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">handle_form</span><span class="p">(</span><span class="n">txt</span><span class="p">)</span>
+        <span class="n">content_type</span> <span class="o">=</span> <span class="s2">&quot;multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW&quot;</span>
+        <span class="n">txt</span> <span class="o">=</span> <span class="n">parse_table_to_text</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">qry</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">handle_form</span><span class="p">(</span><span class="n">qry</span><span class="p">)</span>
+        <span class="n">res</span>  <span class="o">=</span> <span class="n">handle_query</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+        
+    
+    <span class="n">request</span>  <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;POST /</span><span class="si">{}</span><span class="s1"> HTTP/1.1</span><span class="se">\r\n</span><span class="s1">&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">res</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+    <span class="n">request</span> <span class="o">+=</span> <span class="s1">&#39;Host: </span><span class="si">{}</span><span class="se">\r\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">client</span><span class="o">.</span><span class="n">addr</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+    <span class="n">request</span> <span class="o">+=</span> <span class="s1">&#39;Content-Type: </span><span class="si">{}</span><span class="se">\r\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">content_type</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+    <span class="n">request</span> <span class="o">+=</span> <span class="s1">&#39;Content-Length: </span><span class="si">{}</span><span class="se">\r\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">txt</span><span class="p">))</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+    <span class="n">request</span> <span class="o">+=</span> <span class="sa">b</span><span class="s1">&#39;Connection: keep-alive</span><span class="se">\r\n</span><span class="s1">&#39;</span>
+    <span class="n">request</span> <span class="o">+=</span> <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\r\n</span><span class="s1">&#39;</span>
+    <span class="n">request</span> <span class="o">+=</span> <span class="n">txt</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[POST] post request: </span><span class="se">\r\n</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)))</span>
+    
+    <span class="n">client</span><span class="o">.</span><span class="n">sock</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">request</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      <h2><span id="handling-a-form" href="handling-a-form"> Handling a form </span></h2>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      <p>When the user wants to send a form, we parse this and use JSON to create a dictionary.
+Then we return the dictionary.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">handle_form</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="n">cnt</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">temp</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">char</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">char</span> <span class="o">==</span> <span class="s1">&#39;{&#39;</span><span class="p">:</span>
+            <span class="n">temp</span> <span class="o">+=</span> <span class="n">char</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\&quot;</span><span class="s2">&quot;</span>
+        <span class="k">elif</span> <span class="n">char</span> <span class="o">==</span> <span class="s1">&#39;:&#39;</span> <span class="ow">or</span> <span class="n">char</span> <span class="o">==</span> <span class="s1">&#39;}&#39;</span><span class="p">:</span>
+            <span class="n">temp</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\&quot;</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">char</span>
+            <span class="k">if</span> <span class="n">char</span> <span class="o">==</span> <span class="s1">&#39;:&#39;</span><span class="p">:</span>
+                <span class="n">temp</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\&quot;</span><span class="s2">&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">temp</span> <span class="o">+=</span> <span class="n">char</span>
+            
+        <span class="n">cnt</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">temp</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">data</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      <h2><span id="form-dictionary-to-header-content" href="form-dictionary-to-header-content"> Form dictionary to header content </span></h2>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-7'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-7'>#</a>
+      </div>
+      <p>After generating the form dictionary in  <a href="post.html#section-4">post.py</a>, we need to put this inside the headers content.
+Using the WebKitFormBoundary to send the form correctly. </p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">parse_table_to_text</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="n">helper_data</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">arr</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">arr</span><span class="p">:</span>    
+            <span class="n">helper_data</span> <span class="o">+=</span> <span class="s2">&quot;----WebKitFormBoundary7MA4YWxkTrZu0gW</span><span class="se">\r\n</span><span class="s2">Content-Disposition: form-data; name=</span><span class="se">\&quot;</span><span class="si">{}</span><span class="se">\&quot;\r\n\r\n</span><span class="si">{}</span><span class="se">\r\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">arr</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+            
+    <span class="n">helper_data</span> <span class="o">+=</span> <span class="s2">&quot;----WebKitFormBoundary7MA4YWxkTrZu0gW&quot;</span>
+    
+    <span class="k">return</span> <span class="n">helper_data</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-8'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-8'>#</a>
+      </div>
+      <h2><span id="querying-the-uri" href="querying-the-uri"> Querying the URI </span></h2>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-9'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-9'>#</a>
+      </div>
+      <p>Eventhough this is not standard, this allows scaling for non-idempotent actions. It allows us to limit the scope of the current request.(Later on to remove only certain things etc.).</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">handle_query</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+    <span class="n">url_string</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">?</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="n">parse_url_string_form</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">url_string</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-10'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-10'>#</a>
+      </div>
+      <h2><span id="query-dictionary-to-string" href="query-dictionary-to-string"> Query dictionary to string </span></h2>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-11'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-11'>#</a>
+      </div>
+      <p>When a query is requested and parsed to a dictionary, we need to set the query of the URI.
+We do this by adding each element (key, input pair) to the url_string.
+Then we return this String where it will be used to built the new URI in the header of the request.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">parse_url_string_form</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="n">url_string</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">arr</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">arr</span><span class="p">:</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="n">arr</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">arr</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            
+            <span class="k">if</span> <span class="s2">&quot;=&quot;</span> <span class="ow">in</span> <span class="n">url_string</span><span class="p">:</span>
+                <span class="n">url_string</span> <span class="o">+=</span> <span class="s2">&quot;&amp;</span><span class="si">{}</span><span class="s2">=</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">arr</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">url_string</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">=</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">arr</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">url_string</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-12'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-12'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[POST]&quot;</span><span class="p">)</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

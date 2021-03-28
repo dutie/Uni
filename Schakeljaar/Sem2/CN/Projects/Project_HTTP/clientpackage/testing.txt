@@ -1,0 +1,12 @@
+Addresses for testing purposes:
+    - address for testing put:
+        addr = "www.postman-echo.com"
+    - address for testing pictures:
+        addr = "www.tinyos.net"
+    - address for testing post:
+        addr = "www.postman-echo.com"
+    - address for regular:
+        addr = "www.google.com"
+        addr = "www.tcpipguide.com"
+        
+port = 80
