@@ -78,8 +78,12 @@ The header is put in a dictionary for simple handling later on.</p>
     <div class='code'>
       <div class="highlight"><pre>    <span class="k">if</span> <span class="n">header</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">:</span>
         <span class="n">header</span> <span class="o">=</span> <span class="n">header</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">header</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()[</span><span class="mi">1</span><span class="p">:])</span>
     
-    <span class="n">headers</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([</span><span class="n">i</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;: &#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">header</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()[</span><span class="mi">1</span><span class="p">:]])</span>
+    <span class="n">header</span> <span class="o">=</span> <span class="n">header</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()[</span><span class="mi">1</span><span class="p">:]</span>
+    <span class="k">if</span> <span class="s2">&quot;HTTP&quot;</span> <span class="ow">in</span> <span class="n">header</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+        <span class="n">header</span> <span class="o">=</span> <span class="n">header</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+    <span class="n">headers</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([</span><span class="n">i</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;: &#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">header</span><span class="p">])</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[HEAD] head is:</span><span class="se">\r\n</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">header</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">headers</span></pre></div>
     </div>

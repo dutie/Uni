@@ -73,11 +73,12 @@ It is the middleman of the project that will divide the work over the different 
       <h2><span id="initialize" href="initialize"> Initialize </span></h2>
     </div>
     <div class='code'>
-      <div class="highlight"><pre>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">addr</span><span class="o">=</span><span class="s2">&quot;www.google.com&quot;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">80</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="s2">&quot;GET&quot;</span><span class="p">):</span>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">addr</span><span class="o">=</span><span class="s2">&quot;www.google.com&quot;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">80</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="n">path</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">addr</span>    <span class="o">=</span> <span class="n">addr</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">port</span>    <span class="o">=</span> <span class="n">port</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">command</span> <span class="o">=</span> <span class="n">command</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">server</span>  <span class="o">=</span> <span class="p">(</span><span class="n">addr</span><span class="p">,</span> <span class="n">port</span><span class="p">)</span></pre></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">server</span>  <span class="o">=</span> <span class="p">(</span><span class="n">addr</span><span class="p">,</span> <span class="n">port</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path</span>    <span class="o">=</span> <span class="s2">&quot;/&quot;</span><span class="o">+</span><span class="n">path</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -168,8 +169,11 @@ handle and store everything correctly.
       <div class="highlight"><pre>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">command</span> <span class="o">==</span> <span class="s2">&quot;GET&quot;</span>  <span class="p">:</span>
             <span class="n">get</span><span class="o">.</span><span class="n">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
             <span class="n">headers</span> <span class="o">=</span> <span class="n">head</span><span class="o">.</span><span class="n">get_head</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="n">get</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="n">headers</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
-            <span class="n">parser_</span><span class="o">.</span><span class="n">set_html_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span></pre></div>
+            <span class="n">data</span><span class="p">,</span> <span class="n">content_type</span> <span class="o">=</span> <span class="n">get</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="n">headers</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">content_type</span> <span class="o">==</span> <span class="s2">&quot;html&quot;</span><span class="p">:</span>
+                <span class="n">parser_</span><span class="o">.</span><span class="n">set_html_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">parser_</span><span class="o">.</span><span class="n">set_object</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -256,6 +260,23 @@ handle and store everything correctly.
     <div class='docs'>
       <div class='octowrap'>
         <a class='octothorpe' href='#section-17'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">send_end</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">request</span>  <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;HEAD / HTTP/1.1</span><span class="se">\r\n</span><span class="s1">&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+        <span class="n">request</span> <span class="o">+=</span> <span class="sa">b</span><span class="s1">&#39;Connection: close&#39;</span>
+        <span class="n">request</span> <span class="o">+=</span> <span class="s1">&#39;Host: </span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="se">\r\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">addr</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+        <span class="n">request</span> <span class="o">+=</span> <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\r\n</span><span class="s1">&#39;</span>
+        <span class="n">request</span> <span class="o">+=</span> <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\r\n</span><span class="s1">&#39;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-18'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-18'>#</a>
       </div>
       
     </div>

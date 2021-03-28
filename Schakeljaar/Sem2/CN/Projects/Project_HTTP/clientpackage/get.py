@@ -89,6 +89,12 @@ def get_data(headers, client):
     
     content_length = int(headers.get('Content-Length', 0))
     chunked = (headers.get('Transfer-Encoding', 0))
+    content_type = (headers.get('Content-Type', 0))
+    
+    if "text" in content_type:
+        content_type = "html"
+    else:
+        content_type = "object"
     
     if chunked == 'chunked':
         print("[GET] Transfer-Encoding: chunked")
@@ -98,7 +104,7 @@ def get_data(headers, client):
         print("[GET] Content-Length: ", content_length)
         data += get_content(content_length, client)
 
-    return data
+    return data, content_type
 
 # == Setting up the GET request ==
 
@@ -107,8 +113,8 @@ To setup the GET request, we form the request based on our Client [[client.py]] 
 """
 def setup(client):
     print("[GET]")
-    
-    request  = (client.command + ' / HTTP/1.1\r\n').encode('utf-8')
+        
+    request  = (client.command + " " + client.path + ' HTTP/1.1\r\n').encode('utf-8')
     request += 'Host: {}\r\n'.format(client.addr).encode('utf-8')
     request += b'\r\n\r\n'
         

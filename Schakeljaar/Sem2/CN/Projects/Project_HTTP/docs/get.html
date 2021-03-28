@@ -180,6 +180,12 @@ With the returned data, we will parse it to HTML in  <a href="parser_.html">pars
     
     <span class="n">content_length</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Content-Length&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
     <span class="n">chunked</span> <span class="o">=</span> <span class="p">(</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Transfer-Encoding&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+    <span class="n">content_type</span> <span class="o">=</span> <span class="p">(</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Content-Type&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+    
+    <span class="k">if</span> <span class="s2">&quot;text&quot;</span> <span class="ow">in</span> <span class="n">content_type</span><span class="p">:</span>
+        <span class="n">content_type</span> <span class="o">=</span> <span class="s2">&quot;html&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">content_type</span> <span class="o">=</span> <span class="s2">&quot;object&quot;</span>
     
     <span class="k">if</span> <span class="n">chunked</span> <span class="o">==</span> <span class="s1">&#39;chunked&#39;</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[GET] Transfer-Encoding: chunked&quot;</span><span class="p">)</span>
@@ -189,7 +195,7 @@ With the returned data, we will parse it to HTML in  <a href="parser_.html">pars
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[GET] Content-Length: &quot;</span><span class="p">,</span> <span class="n">content_length</span><span class="p">)</span>
         <span class="n">data</span> <span class="o">+=</span> <span class="n">get_content</span><span class="p">(</span><span class="n">content_length</span><span class="p">,</span> <span class="n">client</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">data</span></pre></div>
+    <span class="k">return</span> <span class="n">data</span><span class="p">,</span> <span class="n">content_type</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -215,8 +221,8 @@ With the returned data, we will parse it to HTML in  <a href="parser_.html">pars
     <div class='code'>
       <div class="highlight"><pre><span class="k">def</span> <span class="nf">setup</span><span class="p">(</span><span class="n">client</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[GET]&quot;</span><span class="p">)</span>
-    
-    <span class="n">request</span>  <span class="o">=</span> <span class="p">(</span><span class="n">client</span><span class="o">.</span><span class="n">command</span> <span class="o">+</span> <span class="s1">&#39; / HTTP/1.1</span><span class="se">\r\n</span><span class="s1">&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+        
+    <span class="n">request</span>  <span class="o">=</span> <span class="p">(</span><span class="n">client</span><span class="o">.</span><span class="n">command</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="n">client</span><span class="o">.</span><span class="n">path</span> <span class="o">+</span> <span class="s1">&#39; HTTP/1.1</span><span class="se">\r\n</span><span class="s1">&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
     <span class="n">request</span> <span class="o">+=</span> <span class="s1">&#39;Host: </span><span class="si">{}</span><span class="se">\r\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">client</span><span class="o">.</span><span class="n">addr</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
     <span class="n">request</span> <span class="o">+=</span> <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\r\n\r\n</span><span class="s1">&#39;</span>
         

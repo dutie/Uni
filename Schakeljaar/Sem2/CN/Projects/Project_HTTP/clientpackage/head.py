@@ -20,8 +20,12 @@ def get_head(client):
     # The if statement is here to fix a bug with a Google reply that a lot of people seemed to have.
     if header[0:1] == '\n':
         header = header[1:]
+    print(header.splitlines()[1:])
     
-    headers = dict([i.split(': ') for i in header.splitlines()[1:]])
+    header = header.splitlines()[1:]
+    if "HTTP" in header[0]:
+        header = header[1:]
+    headers = dict([i.split(': ') for i in header])
     print("[HEAD] head is:\r\n{}".format(header))
     return headers
 

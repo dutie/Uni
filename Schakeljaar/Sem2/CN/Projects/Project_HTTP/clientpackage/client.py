@@ -15,11 +15,12 @@ import get, head, post, put, parser_
 
 class Client:
     # == Initialize ==
-    def __init__(self, addr="www.google.com", port=80, command="GET"):
+    def __init__(self, addr="www.google.com", port=80, command="GET", path = ""):
         self.addr    = addr
         self.port    = port
         self.command = command
         self.server  = (addr, port)
+        self.path    = "/"+path
         
     # == Set up client socket ==
     
@@ -55,8 +56,11 @@ class Client:
         if self.command == "GET"  :
             get.setup(self)
             headers = head.get_head(self)
-            data = get.get_data(headers, self)
-            parser_.set_html_file(self, data)
+            data, content_type = get.get_data(headers, self)
+            if content_type == "html":
+                parser_.set_html_file(self, data)
+            else:
+                parser_.set_object(self, data)
         # === Handling PUT ===
         
         """
@@ -82,6 +86,14 @@ class Client:
             head.head_data(self)                    
                     
         return data
+    
+    def send_end(self):
+        request  = ('HEAD / HTTP/1.1\r\n').encode('utf-8')
+        request += b'Connection: close'
+        request += 'Host: {}:{}\r\n'.format(self.addr, self.port).encode('utf-8')
+        request += b'\r\n'
+        request += b'\r\n'
+        
 
     
 def main():        

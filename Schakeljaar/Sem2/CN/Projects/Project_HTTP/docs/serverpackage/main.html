@@ -3,7 +3,7 @@
 <head>
   <meta http-equiv="content-type" content="text/html;charset=utf-8">
   <title>main.py</title>
-  <link rel="stylesheet" href="..\pycco.css">
+  <link rel="stylesheet" href="pycco.css">
 </head>
 <body>
 <div id='container'>
@@ -17,21 +17,10 @@
       <div class='octowrap'>
         <a class='octothorpe' href='#section-0'>#</a>
       </div>
-      
+      <h1><span id="start-the-server" href="start-the-server"> Start the server </span></h1>
     </div>
     <div class='code'>
-      <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">socket</span>
-<span class="kn">import</span> <span class="nn">threading</span>
-
-<span class="n">HEADER</span> <span class="o">=</span> <span class="mi">64</span>
-<span class="n">PORT</span> <span class="o">=</span> <span class="mi">5050</span>
-<span class="n">SERVER</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">gethostbyname</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">gethostname</span><span class="p">())</span>
-<span class="n">ADDR</span> <span class="o">=</span> <span class="p">(</span><span class="n">SERVER</span><span class="p">,</span> <span class="n">PORT</span><span class="p">)</span>
-<span class="n">FORMAT</span> <span class="o">=</span> <span class="s1">&#39;utf-8&#39;</span>
-<span class="n">DISCONNECT_MESSAGE</span> <span class="o">=</span> <span class="s2">&quot;!DISCONNECT&quot;</span>
-
-<span class="n">server</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_STREAM</span><span class="p">)</span>
-<span class="n">server</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="n">ADDR</span><span class="p">)</span></pre></div>
+      <div class="highlight"><pre><span></span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -40,25 +29,12 @@
       <div class='octowrap'>
         <a class='octothorpe' href='#section-1'>#</a>
       </div>
-      
+      <h2><span id="imports:" href="imports:"> Imports: </span></h2>
     </div>
     <div class='code'>
-      <div class="highlight"><pre><span class="k">def</span> <span class="nf">handle_client</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span> <span class="n">addr</span><span class="p">):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[NEW CONNECTION] </span><span class="si">{</span><span class="n">addr</span><span class="si">}</span><span class="s2"> connected.&quot;</span><span class="p">)</span>
-
-    <span class="n">connected</span> <span class="o">=</span> <span class="kc">True</span>
-    <span class="k">while</span> <span class="n">connected</span><span class="p">:</span>
-        <span class="n">msg_length</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="n">HEADER</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">FORMAT</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">msg_length</span><span class="p">:</span>
-            <span class="n">msg_length</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">msg_length</span><span class="p">)</span>
-            <span class="n">msg</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="n">msg_length</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">FORMAT</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">msg</span> <span class="o">==</span> <span class="n">DISCONNECT_MESSAGE</span><span class="p">:</span>
-                <span class="n">connected</span> <span class="o">=</span> <span class="kc">False</span>
-
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="n">addr</span><span class="si">}</span><span class="s2">] </span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="n">conn</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s2">&quot;Msg received&quot;</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">FORMAT</span><span class="p">))</span>
-
-    <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></pre></div>
+      <div class="highlight"><pre><span class="kn">import</span> <span class="nn">server</span>
+<span class="kn">import</span> <span class="nn">request</span>
+<span class="kn">import</span> <span class="nn">traceback</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -67,21 +43,24 @@
       <div class='octowrap'>
         <a class='octothorpe' href='#section-2'>#</a>
       </div>
-      
+      <h2><span id="main-function" href="main-function"> Main function </span></h2>
     </div>
     <div class='code'>
-      <div class="highlight"><pre><span class="k">def</span> <span class="nf">start</span><span class="p">():</span>
-    <span class="n">server</span><span class="o">.</span><span class="n">listen</span><span class="p">()</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[LISTENING] Server is listening on </span><span class="si">{</span><span class="n">SERVER</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-        <span class="n">conn</span><span class="p">,</span> <span class="n">addr</span> <span class="o">=</span> <span class="n">server</span><span class="o">.</span><span class="n">accept</span><span class="p">()</span>
-        <span class="n">thread</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">handle_client</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span> <span class="n">addr</span><span class="p">))</span>
-        <span class="n">thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[ACTIVE CONNECTIONS] </span><span class="si">{</span><span class="n">threading</span><span class="o">.</span><span class="n">activeCount</span><span class="p">()</span> <span class="o">-</span> <span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[STARTING] server is starting...&quot;</span><span class="p">)</span>
-<span class="n">start</span><span class="p">()</span>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      <p>Performs startup operation of the server in  <a href="server.html">server.py</a></p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="n">server</span> <span class="o">=</span> <span class="n">server</span><span class="o">.</span><span class="n">Server</span><span class="p">()</span>        
+<span class="n">server</span><span class="o">.</span><span class="n">setup_server</span><span class="p">()</span>
+<span class="n">server</span><span class="o">.</span><span class="n">start_up</span><span class="p">()</span>
 
 </pre></div>
     </div>

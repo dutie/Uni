@@ -79,7 +79,9 @@ In the end the client&rsquo;s socket is closed.</p>
         <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">path</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\\</span><span class="s1">get</span><span class="se">\\</span><span class="s1">home</span><span class="se">\\</span><span class="s1">&#39;</span><span class="o">+</span><span class="n">name</span><span class="o">+</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">images&#39;</span><span class="p">)</span>
     
     <span class="k">if</span><span class="p">(</span><span class="n">images</span> <span class="o">!=</span> <span class="p">[]</span> <span class="ow">and</span> <span class="n">images</span> <span class="o">!=</span> <span class="p">[()]):</span>
-        <span class="k">for</span> <span class="p">(</span><span class="n">src</span><span class="p">,</span><span class="n">image</span><span class="p">)</span> <span class="ow">in</span> <span class="n">images</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">src</span><span class="p">,</span><span class="n">image</span> <span class="ow">in</span> <span class="n">images</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">image</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="n">image</span> <span class="o">=</span> <span class="n">image</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
             <span class="nb">print</span><span class="p">(</span><span class="n">src</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;IMG: &quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">image</span><span class="p">))</span>
             <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;get/home/</span><span class="si">{}</span><span class="s1">/images</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">src</span><span class="p">),</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span>
@@ -89,11 +91,11 @@ In the end the client&rsquo;s socket is closed.</p>
     
     <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;get/home/</span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">index</span><span class="p">),</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span>
     
-    
+    <span class="n">soup</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">prettify</span><span class="p">()</span>
     <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">soup</span><span class="p">))</span>
     <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
     
-    <span class="n">client</span><span class="o">.</span><span class="n">sock</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></pre></div>
+    <span class="n">client</span><span class="o">.</span><span class="n">send_end</span><span class="p">()</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -184,7 +186,6 @@ Then we return the request.</p>
     <span class="n">request</span>  <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;GET&quot;</span> <span class="o">+</span> <span class="s1">&#39; /</span><span class="si">{}</span><span class="s1"> HTTP/1.1</span><span class="se">\r\n</span><span class="s1">&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">src</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
     <span class="n">request</span> <span class="o">+=</span> <span class="s1">&#39;Host: </span><span class="si">{}</span><span class="se">\r\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">client</span><span class="o">.</span><span class="n">addr</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
     <span class="n">request</span> <span class="o">+=</span> <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\r\n</span><span class="s1">&#39;</span>
-    <span class="n">request</span> <span class="o">+=</span> <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\r\n</span><span class="s1">&#39;</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[GET] image request: &quot;</span><span class="p">,</span> <span class="n">request</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">request</span></pre></div>
     </div>
@@ -194,6 +195,36 @@ Then we return the request.</p>
     <div class='docs'>
       <div class='octowrap'>
         <a class='octothorpe' href='#section-8'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">set_object</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+    <span class="n">obj</span> <span class="o">=</span> <span class="n">data</span>
+    <span class="n">src</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">path</span>
+    
+    <span class="n">folder</span>  <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">addr</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">name</span>    <span class="o">=</span> <span class="n">src</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">path</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\\</span><span class="s1">get</span><span class="se">\\</span><span class="s1">home</span><span class="se">\\</span><span class="s1">&#39;</span><span class="o">+</span><span class="n">folder</span><span class="p">):</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">path</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\\</span><span class="s1">get</span><span class="se">\\</span><span class="s1">home</span><span class="se">\\</span><span class="s1">&#39;</span><span class="o">+</span><span class="n">folder</span><span class="o">+</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">images</span><span class="se">\\</span><span class="s1">&#39;</span><span class="o">+</span><span class="n">name</span><span class="p">)</span>
+    
+    
+    <span class="nb">print</span><span class="p">(</span><span class="n">src</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;IMG: &quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">obj</span><span class="p">))</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;get/home/</span><span class="si">{}</span><span class="s1">/images</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="n">name</span><span class="p">),</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    
+    <span class="n">client</span><span class="o">.</span><span class="n">sock</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-9'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-9'>#</a>
       </div>
       
     </div>

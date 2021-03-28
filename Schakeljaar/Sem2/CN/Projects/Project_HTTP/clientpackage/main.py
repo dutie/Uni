@@ -19,6 +19,10 @@ def main():
     req = input(">")
     command, addr, http = req.split(' ')
     addr, port = addr.split(':',1)
+    if "/" in port:
+        port, path = port.split('/', 1)
+    else:
+        path = ""
     port = int(port)
     print(command, addr, port)
     
@@ -37,9 +41,16 @@ def main():
             - setup the socket for this request,
             - send the request and handle it correctly.
     """
-    client_ = client.Client(addr, port, command)
+    client_ = client.Client(addr, port, command, path)
     client_.setup_socket()
     client_.send_msg()
+    
+    print("Type ENTER to continue or CLOSE to stop.")
+    enter = input("...")
+    if enter == "ENTER":
+        main()
+    elif enter == "CLOSE":
+        client_.send_end()
 
 # == Main ==
 

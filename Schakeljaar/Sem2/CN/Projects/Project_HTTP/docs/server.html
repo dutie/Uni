@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>server.py</title>
+  <link rel="stylesheet" href="pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>server.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      <h1><span id="client-class" href="client-class"> Client class </span></h1>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      <p>This file represents the server. Requires address of host, port, clrf and threads that will be added on startup.
+It receives requests and handles them. It controls how web users access hosted files. 
+We are using an HTTP/1.1 server. It understands URLs and HTTP commands. The server can be accessed through the ip-address,
+unfortunately, i did not implement domain names of the html files it stores,
+and it delivers the content of these hosted websites to the end user&rsquo;s device.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      <h2><span id="imports:" href="imports:"> Imports: </span></h2>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="kn">import</span> <span class="nn">socket</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">threading</span>
+<span class="kn">import</span> <span class="nn">traceback</span><span class="o">,</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">request</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">Server</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      <h2><span id="initialize" href="initialize"> Initialize </span></h2>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">addr</span><span class="o">=</span><span class="s2">&quot;192.168.56.1&quot;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">5050</span><span class="p">,</span> <span class="n">clrf</span> <span class="o">=</span><span class="s2">&quot;</span><span class="se">\r\n</span><span class="s2">&quot;</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">addr</span>    <span class="o">=</span> <span class="p">(</span><span class="n">addr</span><span class="p">,</span> <span class="n">port</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">port</span>    <span class="o">=</span> <span class="n">port</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">CLRF</span>    <span class="o">=</span> <span class="n">clrf</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">threads</span> <span class="o">=</span> <span class="p">[]</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      <h2><span id="set-up-server" href="set-up-server"> Set up server </span></h2>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      <pre><code>Try to bind to a socket to listen to incomming requests, problem may be: 
+malformed url or no internet connection
+
+Post:
+</code></pre>
+<ul>
+<li><strong>if</strong> try succeeds: connect,</li>
+<li><strong>else</strong> throw new error</li>
+</ul>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-7'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-7'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">setup_server</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">SERVER</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">gethostbyname</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">gethostname</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">addr</span>   <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">SERVER</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">server</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_STREAM</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">server</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">addr</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">server</span><span class="o">.</span><span class="n">setsockopt</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">SOL_SOCKET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SO_REUSEADDR</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">socket</span><span class="o">.</span><span class="n">error</span><span class="p">:</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="s1">&#39;Failed to bind to server.&#39;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-8'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-8'>#</a>
+      </div>
+      <h2><span id="start-listening" href="start-listening"> Start listening </span></h2>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-9'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-9'>#</a>
+      </div>
+      <pre><code>Create a thread for each incomming connection and name it clientsock with its address: clientaddress.
+Then the thread is added to the server if we needed to access it later on.
+Start the thread and go to the handle_client  [server.py](server.html#section-5)
+</code></pre>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-10'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-10'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">start_up</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">server</span><span class="o">.</span><span class="n">listen</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[LISTENING] Server is listening on </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">server</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">clientsock</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+            <span class="n">clientaddress</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">clientsock</span><span class="p">,</span> <span class="n">clientaddress</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">server</span><span class="o">.</span><span class="n">accept</span><span class="p">()</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[CLIENT SOCK] &quot;</span><span class="p">,</span> <span class="n">clientsock</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
+                <span class="k">raise</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">traceback</span><span class="o">.</span><span class="n">print_exc</span><span class="p">()</span>
+           
+            <span class="n">thread</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">handle_client</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">clientsock</span><span class="p">,</span> <span class="n">clientaddress</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">threads</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">thread</span><span class="p">)</span>
+            <span class="n">thread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[ACTIVE CONNECTIONS] </span><span class="si">{</span><span class="n">threading</span><span class="o">.</span><span class="n">activeCount</span><span class="p">()</span> <span class="o">-</span> <span class="mi">5</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-11'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-11'>#</a>
+      </div>
+      <h2><span id="handle-incomming-requests" href="handle-incomming-requests"> Handle incomming requests </span></h2>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-12'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-12'>#</a>
+      </div>
+      <pre><code>Try to receave the header and create the actual request in  [request.py](request.html).
+Then, according to the HTTP command, resolve the query.
+if:
+
+- GET: find the required file and send it to client with the appropriate code. If it does not exist send the appropriate code (404).
+- PUT: see if file exists, if it does and the data is not the same, overwrite it. If it does but the data is the same, send this with the appropriate code (204). Else create the new file.
+- POST: see if file exists, if it does and the text is different, append. Else create a new file when the file does not exist. Return appropriate code to client (200, 201, 204).
+- Other: InvalidRequest will be prompted and asked to retry (400, 500).
+</code></pre>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-13'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-13'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">handle_client</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">clientsock</span><span class="p">,</span> <span class="n">clientaddress</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[NEW CONNECTION] </span><span class="si">{</span><span class="n">clientaddress</span><span class="si">}</span><span class="s2"> connected.&quot;</span><span class="p">)</span>
+
+        <span class="n">connected</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">while</span> <span class="n">connected</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">request_</span> <span class="o">=</span> <span class="n">clientsock</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="mi">1024</span><span class="p">)</span>
+                <span class="n">request_</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">Request</span><span class="p">(</span><span class="n">request_</span><span class="p">)</span>
+                <span class="n">data</span>     <span class="o">=</span> <span class="n">request_</span><span class="o">.</span><span class="n">_data</span>
+                <span class="n">status</span>   <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+                    
+                <span class="k">if</span> <span class="n">request_</span><span class="o">.</span><span class="n">_method</span> <span class="o">!=</span> <span class="sa">b</span><span class="s2">&quot;GET&quot;</span> <span class="ow">and</span> <span class="n">request_</span><span class="o">.</span><span class="n">_method</span> <span class="o">!=</span> <span class="sa">b</span><span class="s2">&quot;HEAD&quot;</span><span class="p">:</span>
+                    
+                    <span class="n">length_</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">request_</span><span class="o">.</span><span class="n">_headers</span><span class="p">[</span><span class="sa">b</span><span class="s2">&quot;Content-Length&quot;</span><span class="p">])</span>
+                    <span class="n">act_length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">+</span> <span class="mi">4</span>
+                    <span class="k">while</span> <span class="n">act_length</span> <span class="o">&lt;</span> <span class="n">length_</span><span class="p">:</span>
+                        <span class="n">data</span> <span class="o">+=</span> <span class="n">clientsock</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="n">length_</span><span class="p">)</span>
+                        
+                    <span class="k">if</span> <span class="n">request_</span><span class="o">.</span><span class="n">_method</span> <span class="o">==</span> <span class="sa">b</span><span class="s2">&quot;PUT&quot;</span><span class="p">:</span>
+                        <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
+                        <span class="n">name</span> <span class="o">=</span> <span class="n">request_</span><span class="o">.</span><span class="n">_path</span>
+                        <span class="n">path_to_file</span> <span class="o">=</span> <span class="n">name</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="n">name</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">])]</span>
+                        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">path</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\\</span><span class="s1">get</span><span class="se">\\</span><span class="s1">files&#39;</span> <span class="o">+</span> <span class="n">name</span><span class="p">):</span>
+                            <span class="n">status</span> <span class="o">=</span> <span class="s2">&quot;201 CREATED&quot;</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">status</span> <span class="o">=</span> <span class="s2">&quot;204 NO CONTENT&quot;</span>
+                        <span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;/&quot;</span><span class="p">)</span>
+                        <span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                        <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;get/files/</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">),</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span>
+                        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+                        <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="n">request_</span><span class="o">.</span><span class="n">_method</span> <span class="o">==</span> <span class="sa">b</span><span class="s2">&quot;POST&quot;</span><span class="p">:</span>
+                        <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
+                        <span class="n">name</span> <span class="o">=</span> <span class="n">request_</span><span class="o">.</span><span class="n">_path</span>
+                        <span class="n">path_to_file</span> <span class="o">=</span> <span class="n">name</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="n">name</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">])]</span>
+                        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">path</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\\</span><span class="s1">get</span><span class="se">\\</span><span class="s1">files&#39;</span> <span class="o">+</span> <span class="n">name</span><span class="p">):</span>
+                            <span class="n">status</span> <span class="o">=</span> <span class="s2">&quot;201 CREATED&quot;</span>
+                            <span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;/&quot;</span><span class="p">)</span>
+                            <span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                            <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;get/files/</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">),</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span>
+                            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+                            <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">string_</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;get/files/</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">),</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+                            <span class="k">if</span> <span class="n">string_</span> <span class="o">==</span> <span class="n">data</span><span class="p">:</span>
+                                <span class="n">status</span> <span class="o">=</span> <span class="s2">&quot;304 Not Modified&quot;</span>
+                            <span class="k">else</span><span class="p">:</span>                            
+                                <span class="n">status</span> <span class="o">=</span> <span class="s2">&quot;200 OK&quot;</span>
+                                
+                                <span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;/&quot;</span><span class="p">)</span>
+                                <span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                                <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;get/files/</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">),</span> <span class="s2">&quot;ab&quot;</span><span class="p">)</span>
+                                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+                                <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+                        
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">status</span> <span class="o">=</span> <span class="s2">&quot;200 OK&quot;</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">request_parser</span><span class="p">(</span><span class="n">request_</span><span class="p">,</span> <span class="n">status</span><span class="p">)</span>
+                <span class="n">clientsock</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+                    
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[SENDING] </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
+                    
+            <span class="k">except</span><span class="p">(</span><span class="ne">KeyboardInterrupt</span><span class="p">,</span> <span class="ne">SystemExit</span><span class="p">):</span>
+                <span class="n">connected</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="k">break</span>
+            
+            <span class="k">except</span> <span class="n">request</span><span class="o">.</span><span class="n">InvalidRequest</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">msg</span>  <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;HTTP/1.1 400 Bad Request</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">CLRF</span><span class="p">))</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;UTF-8&#39;</span><span class="p">)</span>
+                <span class="n">msg</span> <span class="o">+=</span> <span class="p">(</span><span class="s1">&#39;Content-Type: text/html</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">CLRF</span><span class="o">*</span><span class="mi">2</span><span class="p">))</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;UTF-8&#39;</span><span class="p">)</span>
+                <span class="n">msg</span> <span class="o">+=</span><span class="p">(</span><span class="s1">&#39;&lt;h1&gt;Invalid Request: </span><span class="si">{}</span><span class="s1">&lt;/h1&gt;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;UTF-8&#39;</span><span class="p">)</span>
+                <span class="n">clientsock</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">traceback</span><span class="o">.</span><span class="n">print_exc</span><span class="p">()</span>
+                <span class="k">break</span>
+            
+
+
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="n">clientaddress</span><span class="si">}</span><span class="s2">]&quot;</span><span class="p">)</span>
+        <span class="n">clientsock</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-14'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-14'>#</a>
+      </div>
+      <h2><span id="setting-up-the-answer-to-send-to-the-client" href="setting-up-the-answer-to-send-to-the-client"> Setting up the answer to send to the client </span></h2>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-15'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-15'>#</a>
+      </div>
+      <p>This will parse the result of the query of the client into an answer.
+Here the client can act accordingly to the answer.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-16'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-16'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">request_parser</span><span class="p">(</span><span class="n">request_</span><span class="p">,</span> <span class="n">status</span><span class="p">):</span>
+    <span class="n">content_length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">request_</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span>
+    <span class="n">datetime_</span>      <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%d</span><span class="s2">/%m/%Y %H:%M:%S&quot;</span><span class="p">)</span>
+    
+    <span class="n">header</span>  <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;HTTP/1.1 </span><span class="si">{}{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">status</span><span class="p">,</span><span class="s1">&#39;</span><span class="se">\r\n</span><span class="s1">&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;UTF-8&#39;</span><span class="p">)</span>
+    <span class="n">header</span> <span class="o">+=</span> <span class="sa">b</span><span class="s1">&#39;Accept-Ranges: bytes </span><span class="se">\r\n</span><span class="s1">&#39;</span>
+    <span class="n">header</span> <span class="o">+=</span> <span class="s1">&#39;Content-Type: </span><span class="si">{}</span><span class="s1"> </span><span class="se">\r\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">request_</span><span class="o">.</span><span class="n">_content_type</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;UTF-8&#39;</span><span class="p">)</span>
+    <span class="n">header</span> <span class="o">+=</span> <span class="s1">&#39;Content-Length: </span><span class="si">{}</span><span class="se">\r\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">content_length</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;UTF-8&#39;</span><span class="p">)</span>
+    <span class="n">header</span> <span class="o">+=</span> <span class="s1">&#39;Date: </span><span class="si">{}</span><span class="se">\r\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">datetime_</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;UTF-8&#39;</span><span class="p">)</span>
+    <span class="n">header</span> <span class="o">+=</span> <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\r\n</span><span class="s1">&#39;</span>
+    <span class="n">header</span> <span class="o">+=</span> <span class="n">request_</span><span class="o">.</span><span class="n">_data</span>
+    <span class="n">header</span> <span class="o">+=</span> <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\r\n</span><span class="s1">&#39;</span>
+    <span class="k">return</span> <span class="n">header</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

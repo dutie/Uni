@@ -31,7 +31,9 @@ def set_html_file(client, data):
         os.mkdir(path + '\\get\\home\\'+name+'\\images')
     
     if(images != [] and images != [()]):
-        for (src,image) in images:
+        for src,image in images:
+            if len(image) == 2:
+                image = image[0]
             print(src)
             print("IMG: ", str(image))
             f = open('get/home/{}/images{}'.format(name, src), "wb")
@@ -45,7 +47,7 @@ def set_html_file(client, data):
     f.write(str(soup))
     f.close()
     
-    client.sock.close()
+    client.send_end()
 # == Getting embedded objects ==
 
 """
@@ -100,9 +102,31 @@ def get_from_src(src, host, client):
                     
     request  = ("GET" + ' /{} HTTP/1.1\r\n').format(src).encode('utf-8')
     request += 'Host: {}\r\n'.format(client.addr).encode('utf-8')
-    request += b'\r\n\r\n'
+    request += b'\r\n'
     print("[GET] image request: ", request)
     return request
+
+
+def set_object(client, data):
+    obj = data
+    src = client.path
+    
+    folder  = client.addr.split('.')[1]
+    name    = src.split("/")[-1]
+    print(name)
+    path = os.getcwd()
+    if not os.path.exists(path + '\\get\\home\\'+folder):
+        os.mkdir(path + '\\get\\home\\'+folder+'\\images\\'+name)
+    
+    
+    print(src)
+    print("IMG: ", str(obj))
+    f = open('get/home/{}/images{}'.format(folder, name), "wb")
+    f.write(obj)
+    f.close()
+    
+    client.sock.close()
+    
     
 def main():        
     print("Parser.")
