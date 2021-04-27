@@ -1,14 +1,14 @@
-## Welcome to GitHub Pages
+## Welcome to my GitHub Page!
 
-You can use the [editor on GitHub](https://github.com/dutie/Uni/edit/main/README.md) to maintain and preview the content for your website in Markdown files.
+On this site I document all my findings and projects during my years at university.
+For my personal site, checkout my [portfolio site](http://matsfockaert.tk).
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+### Introduction to this page
 
-### Markdown
+For each year, there is a dedicated page that will take you to that project's ReadMe where there is more information about the project and my implementation.
+I am currently also using this for cloud storage purposes.
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
-
-```markdown
+<!- ```markdown
 Syntax highlighted code block
 
 # Header 1
@@ -24,7 +24,7 @@ Syntax highlighted code block
 **Bold** and _Italic_ and `Code` text
 
 [Link](url) and ![Image](src)
-```
+```-->
 
 For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
 
