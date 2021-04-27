@@ -10,19 +10,28 @@ I am currently also using this for cloud storage purposes.
 
 ### University
 
-1. Schakeljaar
-  * Semester 1
-    - Bewijzen en redeneren voor informatici
-    - [Objectgericht programmeren](https://github.com/dutie/Uni/tree/main/Schakeljaar/OGP)
-    - Logica
-    - Wiskunde 1
-    - [Artificiele intelligentie](https://github.com/dutie/Uni/tree/main/Schakeljaar/AI)
-    - Lineaire Algebra
-    - Declaratieve talen
-  * Semester 2 
-    - [Computer Networks](https://github.com/dutie/Uni/tree/main/Schakeljaar/Sem2/CN)
-    - [Software-ontwerp](https://github.com/RemiVermeersch/browsr)
-    - Fundamenten voor de informatica
-    - [Gegevensstructuren en algoritmen](https://github.com/dutie/GegevensstructurenEnAlgoritmen)
-    - Numerieke wiskunde
+```HTML
+
+<ol>
+ <li>Schakeljaar</li>
+ <ol>
+  <li>Semester 1</li>
+  <ol>
+    <li> Bewijzen en redeneren voor informatici</li>
+    <li> [Objectgericht programmeren](https://github.com/dutie/Uni/tree/main/Schakeljaar/OGP)</li>
+    <li> Logica</li>
+    <li> Wiskunde 1</li>
+    <li> [Artificiele intelligentie](https://github.com/dutie/Uni/tree/main/Schakeljaar/AI)</li>
+    <li> Lineaire Algebra</li>
+    <li> Declaratieve talen</li>
+  </ol>
+  <li>Semester 2</li> 
+  <ol>
+    <li> [Computer Networks](https://github.com/dutie/Uni/tree/main/Schakeljaar/Sem2/CN)</li>
+    <li> [Software-ontwerp](https://github.com/RemiVermeersch/browsr)</li>
+    <li> Fundamenten voor de informatica</li>
+    <li> [Gegevensstructuren en algoritmen](https://github.com/dutie/GegevensstructurenEnAlgoritmen)</li>
+    <li> Numerieke wiskunde</li>
+  </ol>
+ </ol>
 
