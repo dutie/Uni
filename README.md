@@ -9,7 +9,7 @@ For each year, there is a dedicated page that will take you to that project's Re
 I am currently also using this for cloud storage purposes.
 
 ### University
-
+```Markdown
 1. Schakeljaar
   * Semester 1
     - Bewijzen en redeneren voor informatici
@@ -25,3 +25,4 @@ I am currently also using this for cloud storage purposes.
     - Fundamenten voor de informatica
     - [Gegevensstructuren en algoritmen](https://github.com/dutie/GegevensstructurenEnAlgoritmen)
     - Numerieke wiskunde
+```
